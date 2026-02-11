@@ -1,20 +1,16 @@
-import { useAuth } from './hooks/useAuth';
-import ClientHome from './pages/ClientHome';
-import Home from './pages/Home';
-import Login from './pages/Login';
+import { useAuth } from "./hooks/useAuth";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
 
-const App = () => {
-  const { isAuthenticated, user } = useAuth();
+function App() {
+  const { user } = useAuth();
 
-  if (!isAuthenticated || !user) {
+  if (!user) {
     return <Login />;
   }
 
-  if (user.role === 'admin') {
-    return <Home />;
-  }
-
-  return <ClientHome />;
-};
+  return <Home />;
+}
 
 export default App;
+

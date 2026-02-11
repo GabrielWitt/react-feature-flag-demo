@@ -1,53 +1,44 @@
-import { createContext, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
-import type { User } from '../types/feature';
+import { createContext, useContext, useState, ReactNode } from "react";
+import { User } from "../types/feature";
 
-export type LoginInput = {
-  name: string;
-  role: User['role'];
-};
-
-export type AuthContextValue = {
+type AuthContextType = {
   user: User | null;
-  isAuthenticated: boolean;
-  login: (input: LoginInput) => void;
+  login: (role: "admin" | "user") => void;
   logout: () => void;
 };
 
-type AuthProviderProps = {
-  children: ReactNode;
-};
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // `useState` stores the actual auth data that can change over time.
-  // Updating `user` is what represents login/logout state transitions.
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (input: LoginInput): void => {
-    setUser({
-      id: Date.now(),
-      name: input.name,
-      role: input.role,
-    });
+  const login = (role: "admin" | "user") => {
+    const mockUser: User = {
+      id: role === "admin" ? 1 : 2,
+      name: role === "admin" ? "Admin User" : "Customer User",
+      role,
+    };
+
+    setUser(mockUser);
   };
 
-  const logout = (): void => {
+  const logout = () => {
     setUser(null);
   };
 
-  // `useMemo` does not store auth state; it memoizes the context object shape.
-  // This keeps a stable reference between renders when `user` is unchanged.
-  const value = useMemo<AuthContextValue>(
-    () => ({
-      user,
-      isAuthenticated: user !== null,
-      login,
-      logout,
-    }),
-    [user],
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
+};
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuthContext must be used within AuthProvider");
+  }
+
+  return context;
 };
