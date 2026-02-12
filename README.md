@@ -47,17 +47,22 @@ This layered approach reduces accidental exposure of restricted UI and improves 
 ## Demo
 Add screenshots/GIFs here:
 
-- `docs/screenshots/login.png`
-- `docs/screenshots/admin-dashboard.png`
-- `docs/screenshots/tenant-home.png`
-- `docs/screenshots/reservations.png`
-- `docs/gifs/feature-flag-toggle.gif`
+- `Mocks/Login.png`
+- `Mocks/HomeAdmin.png`
+- `Mocks/HomeClient.png`
+- `Mocks/Reservation_ist.png`
+- `Mocks/Tenant_List.png`
+- `Mocks/payments_list.png`
 
 Example Markdown:
 
 ```md
-![Login Screen](docs/screenshots/login.png)
-![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+![Login Screen](Mocks/Login.png)
+![Admin Home](Mocks/HomeAdmin.png)
+![Client Home](Mocks/HomeClient.png)
+![Reservations List](Mocks/Reservation_ist.png)
+![Tenant List](Mocks/Tenant_List.png)
+![Payments List](Mocks/payments_list.png)
 ```
 
 ## Features Implemented
