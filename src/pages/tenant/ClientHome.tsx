@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
+import Card from '../../components/ui/Card';
+import LoadingSkeleton from '../../components/ui/LoadingSkeleton';
 import { fetchUsers } from '../../services/usersApi';
 import type { BackendUser, DashboardPayment, DashboardReservation } from '../../services/usersApi';
 import { useAuth } from '../../hooks/useAuth';
@@ -19,11 +21,13 @@ const ClientHome = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tenant, setTenant] = useState<BackendUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadTenant = async (): Promise<void> => {
       if (!user) {
         setTenant(null);
+        setLoading(false);
         return;
       }
 
@@ -33,6 +37,8 @@ const ClientHome = () => {
         setTenant(currentTenant);
       } catch {
         setTenant(null);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -49,43 +55,45 @@ const ClientHome = () => {
 
   return (
     <MainLayout title="My Apartment" subtitle={`Welcome back, ${tenant?.name ?? user?.name ?? 'Tenant'}`}>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <article onClick={() => navigate('/tenant/lease')} className="cursor-pointer rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Unit Overview</h2>
-          <p className="text-base leading-relaxed">Apartment: {apartment}</p>
-          <p className="text-base leading-relaxed">Monthly Rent: {monthlyRent}</p>
-          <p className="text-sm text-gray-600 mt-2">Open lease details</p>
-        </article>
+      {loading ? <LoadingSkeleton /> : null}
 
-        <article className="rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Payment & Reservation</h2>
-          <p className="text-base leading-relaxed">Next Payment Due: {nextPaymentDue}</p>
-          <p className="text-base leading-relaxed">Reservation Status: {reservationStatusLabel}</p>
-        </article>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card className="border border-slate-200 cursor-pointer hover:shadow-md" onClick={() => navigate('/tenant/lease')}>
+          <h2 className="text-2xl font-medium mb-4">Apartment Summary</h2>
+          <p className="text-base">Apartment: {apartment}</p>
+          <p className="text-base">Monthly Rent: {monthlyRent}</p>
+          <p className="text-sm text-gray-500 mt-2">Open lease details</p>
+        </Card>
+
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">Upcoming Payment</h2>
+          <p className="text-base">Next Payment Due: {nextPaymentDue}</p>
+          <p className="text-base">Reservation Status: {reservationStatusLabel}</p>
+        </Card>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Recent Payments</h2>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">Recent Payments</h2>
           <ul className="space-y-2">
             {recentPayments.map((payment) => (
-              <li key={payment.id} className="text-base leading-relaxed">
+              <li key={payment.id} className="text-base">
                 {payment.date} - {payment.description} - {payment.amount}
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
 
-        <section onClick={() => navigate('/tenant/reservations')} className="cursor-pointer rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Upcoming Reservations</h2>
+        <Card className="border border-slate-200 cursor-pointer hover:shadow-md" onClick={() => navigate('/tenant/reservations')}>
+          <h2 className="text-2xl font-medium mb-4">Upcoming Reservations</h2>
           <ul className="space-y-2">
             {upcomingReservations.map((reservation) => (
-              <li key={reservation.id} className="text-base leading-relaxed">
+              <li key={reservation.id} className="text-base">
                 {reservation.label}
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
       </div>
     </MainLayout>
   );

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import MainLayout from '../../components/layout/MainLayout';
+import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 
 type PaymentMethod = 'card' | 'bank';
@@ -52,8 +53,8 @@ const PaymentCheckout = () => {
   };
 
   return (
-    <MainLayout title="Payments" subtitle="Choose a payment method and submit securely">
-      <div className="mb-6 flex flex-wrap gap-2">
+    <MainLayout title="Payments" subtitle="Choose payment method and submit securely">
+      <div className="flex flex-wrap gap-2">
         <Button variant={method === 'card' ? 'primary' : 'secondary'} onClick={() => setMethod('card')} className="text-sm">
           Pay with Card
         </Button>
@@ -62,40 +63,42 @@ const PaymentCheckout = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <article className="rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Payment Details</h2>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">Payment Details</h2>
 
           {method === 'card' ? (
             <div className="grid gap-3">
-              <input value={cardForm.cardNumber} onChange={(event) => setCardForm((prev) => ({ ...prev, cardNumber: event.target.value }))} placeholder="Card number" className="rounded-lg border border-slate-300 px-3 py-2" />
-              <input value={cardForm.cardName} onChange={(event) => setCardForm((prev) => ({ ...prev, cardName: event.target.value }))} placeholder="Name on card" className="rounded-lg border border-slate-300 px-3 py-2" />
-              <input value={cardForm.expDate} onChange={(event) => setCardForm((prev) => ({ ...prev, expDate: event.target.value }))} placeholder="Expiration date (MM/YY)" className="rounded-lg border border-slate-300 px-3 py-2" />
-              <input value={cardForm.cvv} onChange={(event) => setCardForm((prev) => ({ ...prev, cvv: event.target.value }))} placeholder="CVV" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={cardForm.cardNumber} onChange={(event) => setCardForm((prev) => ({ ...prev, cardNumber: event.target.value }))} placeholder="Card number" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+              <input value={cardForm.cardName} onChange={(event) => setCardForm((prev) => ({ ...prev, cardName: event.target.value }))} placeholder="Name on card" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <input value={cardForm.expDate} onChange={(event) => setCardForm((prev) => ({ ...prev, expDate: event.target.value }))} placeholder="MM/YY" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+                <input value={cardForm.cvv} onChange={(event) => setCardForm((prev) => ({ ...prev, cvv: event.target.value }))} placeholder="CVV" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+              </div>
             </div>
           ) : (
             <div className="grid gap-3">
-              <input value={bankForm.accountHolder} onChange={(event) => setBankForm((prev) => ({ ...prev, accountHolder: event.target.value }))} placeholder="Account holder name" className="rounded-lg border border-slate-300 px-3 py-2" />
-              <input value={bankForm.routingNumber} onChange={(event) => setBankForm((prev) => ({ ...prev, routingNumber: event.target.value }))} placeholder="Routing number" className="rounded-lg border border-slate-300 px-3 py-2" />
-              <input value={bankForm.accountNumber} onChange={(event) => setBankForm((prev) => ({ ...prev, accountNumber: event.target.value }))} placeholder="Account number" className="rounded-lg border border-slate-300 px-3 py-2" />
-              <input value={bankForm.bankName} onChange={(event) => setBankForm((prev) => ({ ...prev, bankName: event.target.value }))} placeholder="Bank name" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={bankForm.accountHolder} onChange={(event) => setBankForm((prev) => ({ ...prev, accountHolder: event.target.value }))} placeholder="Account holder name" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+              <input value={bankForm.routingNumber} onChange={(event) => setBankForm((prev) => ({ ...prev, routingNumber: event.target.value }))} placeholder="Routing number" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+              <input value={bankForm.accountNumber} onChange={(event) => setBankForm((prev) => ({ ...prev, accountNumber: event.target.value }))} placeholder="Account number" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
+              <input value={bankForm.bankName} onChange={(event) => setBankForm((prev) => ({ ...prev, bankName: event.target.value }))} placeholder="Bank name" className="rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]" />
             </div>
           )}
 
-          {errorMessage ? <p className="mt-4 text-sm text-red-700">{errorMessage}</p> : null}
-          {successMessage ? <p className="mt-4 text-sm text-emerald-700">{successMessage}</p> : null}
+          {errorMessage ? <p className="mt-4 text-sm text-red-600">{errorMessage}</p> : null}
+          {successMessage ? <p className="mt-4 text-sm text-emerald-600">{successMessage}</p> : null}
 
           <Button onClick={handleSubmit} className="mt-4 text-sm" aria-label="Submit payment">
             Pay Now
           </Button>
-        </article>
+        </Card>
 
-        <article className="rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Account Summary</h2>
-          <p className="text-base leading-relaxed">Outstanding Balance: $1,200.00</p>
-          <p className="text-base leading-relaxed">Due Date: Oct 20, 2025</p>
-          <p className="text-sm text-gray-600 mt-2">Last Payment: Sep 20, 2025</p>
-        </article>
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">Account Summary</h2>
+          <p className="text-base">Outstanding Balance: $1,200.00</p>
+          <p className="text-base">Due Date: Oct 20, 2025</p>
+          <p className="text-sm text-gray-500 mt-2">Last Payment: Sep 20, 2025</p>
+        </Card>
       </div>
     </MainLayout>
   );

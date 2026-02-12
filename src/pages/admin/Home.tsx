@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom';
+import Card from '../../components/ui/Card';
+import LoadingSkeleton from '../../components/ui/LoadingSkeleton';
 import MainLayout from '../../components/layout/MainLayout';
+import Button from '../../components/ui/Button';
 import { useFeatureFlagContext } from '../../context/FeatureFlagContext';
 import { useAuth } from '../../hooks/useAuth';
 import { useFeature } from '../../hooks/useFeature';
@@ -22,56 +25,94 @@ const Home = () => {
 
   return (
     <MainLayout title="Building Dashboard" subtitle={`Welcome, ${user?.name ?? 'Admin'}`}>
-      {loading ? <p className="text-sm text-gray-600">Loading feature flags...</p> : null}
+      {loading ? <LoadingSkeleton /> : null}
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <MetricCard title="Total Tenants" value={<p className="text-xl font-medium">350</p>} subtitle="+12 this month" subtitleClassName="text-blue-600" highlighted />
-        <MetricCard title="Occupied Apartments" value={<p className="text-xl font-medium">280 / 300</p>} subtitle="93.3% occupancy" />
-        <MetricCard title="Pending Payments" value={<p className="text-xl font-medium">$15,000</p>} subtitle="11 payments due" />
-        <MetricCard title="Active Reservations" value={<p className="text-xl font-medium">45</p>} extra={<span className="rounded-full bg-blue-600 px-2 py-1 text-sm text-white">Confirmed</span>} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <MetricCard title="Total Tenants" value={<p className="text-3xl font-semibold">350</p>} subtitle="+12 this month" subtitleClassName="text-sm text-[#2F80ED]" highlighted />
+        <MetricCard title="Occupied Apartments" value={<p className="text-3xl font-semibold">280 / 300</p>} subtitle="93.3% occupancy" />
+        <MetricCard title="Pending Payments" value={<p className="text-3xl font-semibold">$15,000</p>} subtitle="11 payments due" />
+        <MetricCard title="Active Reservations" value={<p className="text-3xl font-semibold">45</p>} extra={<span className="rounded-lg bg-[#2F80ED] px-2 py-1 text-sm text-white">Confirmed</span>} />
       </div>
 
-      <section className="mt-8 rounded-xl border border-slate-200 p-4">
-        <h2 className="text-2xl font-semibold mb-4 text-slate-900">Tenants Overview</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-100 text-gray-600">
-              <tr>
-                <th className="px-3 py-2">Date</th>
-                <th className="px-3 py-2">Description</th>
-                <th className="px-3 py-2">Unit</th>
-                <th className="px-3 py-2">Due Date</th>
-                <th className="px-3 py-2">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tenants.map((tenant, index) => (
-                <TenantRow key={tenant.id} tenant={tenant} isLast={index === tenants.length - 1} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <button
-          type="button"
-          className="mt-4 text-sm text-blue-700 hover:underline"
-          onClick={() => navigate('/admin/tenants')}
-        >
-          View full tenants list
-        </button>
-      </section>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <Card className="border border-slate-200">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-medium">Tenants Overview</h2>
+            <Button variant="secondary" className="text-sm" onClick={() => navigate('/admin/tenants')}>
+              View All
+            </Button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] text-left">
+              <thead className="bg-slate-100 text-sm text-gray-500">
+                <tr>
+                  <th className="px-3 py-3">Date</th>
+                  <th className="px-3 py-3">Description</th>
+                  <th className="px-3 py-3">Unit</th>
+                  <th className="px-3 py-3">Due Date</th>
+                  <th className="px-3 py-3">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tenants.map((tenant, index) => (
+                  <TenantRow key={tenant.id} tenant={tenant} isLast={index === tenants.length - 1} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">Monthly Income</h2>
+          <div className="rounded-lg border border-slate-200 bg-[#F4F6F9] p-4">
+            <svg viewBox="0 0 560 220" className="h-52 w-full" aria-label="Monthly income chart" role="img">
+              <g stroke="#d1d5db" strokeWidth="1">
+                <line x1="40" y1="20" x2="540" y2="20" />
+                <line x1="40" y1="70" x2="540" y2="70" />
+                <line x1="40" y1="120" x2="540" y2="120" />
+                <line x1="40" y1="170" x2="540" y2="170" />
+              </g>
+
+              <polyline fill="none" stroke="#2F80ED" strokeWidth="3" points="40,165 110,95 180,110 250,130 320,35 390,92 460,65 540,45" />
+
+              <g fill="#ffffff" stroke="#2F80ED" strokeWidth="2">
+                <circle cx="40" cy="165" r="5" />
+                <circle cx="110" cy="95" r="5" />
+                <circle cx="180" cy="110" r="5" />
+                <circle cx="250" cy="130" r="5" />
+                <circle cx="320" cy="35" r="5" />
+                <circle cx="390" cy="92" r="5" />
+                <circle cx="460" cy="65" r="5" />
+                <circle cx="540" cy="45" r="5" />
+              </g>
+
+              <g className="fill-gray-500 text-sm">
+                <text x="90" y="205">Jan</text>
+                <text x="160" y="205">Feb</text>
+                <text x="230" y="205">Mar</text>
+                <text x="300" y="205">Apr</text>
+                <text x="370" y="205">May</text>
+                <text x="440" y="205">Jun</text>
+                <text x="510" y="205">Jul</text>
+              </g>
+            </svg>
+          </div>
+        </Card>
+      </div>
 
       {isAdminPanelEnabled ? (
-        <section className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-          <h3 className="text-xl font-medium mb-3 text-emerald-900">Admin Panel</h3>
-          <p className="text-sm text-gray-600">Advanced admin controls are enabled.</p>
-        </section>
+        <Card className="border border-[#56CCF2] bg-[#F4F9FF]">
+          <h3 className="text-xl font-medium mb-3">Admin Panel</h3>
+          <p className="text-sm text-gray-500">Advanced admin controls are enabled.</p>
+        </Card>
       ) : null}
 
       {isBetaDashboardEnabled ? (
-        <section className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4">
-          <h3 className="text-xl font-medium mb-3 text-indigo-900">Beta Dashboard</h3>
-          <p className="text-sm text-gray-600">Experimental analytics modules are enabled.</p>
-        </section>
+        <Card className="border border-slate-200">
+          <h3 className="text-xl font-medium mb-3">Beta Dashboard</h3>
+          <p className="text-sm text-gray-500">Experimental analytics modules are enabled.</p>
+        </Card>
       ) : null}
     </MainLayout>
   );

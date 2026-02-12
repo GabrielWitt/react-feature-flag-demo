@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
+import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -33,10 +34,10 @@ const Login = () => {
   };
 
   return (
-    <MainLayout title="Welcome Back" subtitle="Enter home again, where every detail is made for you." showNavigator={false}>
-      <div className="rounded-xl border border-slate-200 p-4">
-        <h2 className="text-2xl font-semibold mb-4 text-slate-900">Demo Accounts</h2>
-        <div className="flex flex-wrap gap-2">
+    <MainLayout title="Welcome Back" subtitle="Sign in to continue" >
+      <Card className="mx-auto max-w-xl border border-slate-200">
+        <h2 className="text-2xl font-medium mb-4">Demo Accounts</h2>
+        <div className="mb-6 flex flex-wrap gap-2">
           {DEMO_CREDENTIALS.map((credential) => (
             <Button
               key={credential.email}
@@ -51,31 +52,39 @@ const Login = () => {
             </Button>
           ))}
         </div>
-      </div>
 
-      {authError ? <p className="mt-4 text-sm text-red-700">{authError}</p> : null}
+        {authError ? <p className="mb-4 text-sm text-red-600">{authError}</p> : null}
 
-      <form className="mt-6 space-y-4" onSubmit={(event) => void handleSubmit(event)}>
-        <input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="Email"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base leading-relaxed"
-        />
+        <form className="space-y-4" onSubmit={(event) => void handleSubmit(event)}>
+          <div>
+            <label className="text-sm text-gray-500" htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Email"
+              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]"
+            />
+          </div>
 
-        <input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Password"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base leading-relaxed"
-        />
+          <div>
+            <label className="text-sm text-gray-500" htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Password"
+              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]"
+            />
+          </div>
 
-        <Button type="submit" disabled={authLoading} className="text-sm" aria-label="Login">
-          {authLoading ? 'Logging in...' : 'Login'}
-        </Button>
-      </form>
+          <Button type="submit" disabled={authLoading} className="w-full" aria-label="Login">
+            {authLoading ? 'Logging in...' : 'Login'}
+          </Button>
+        </form>
+      </Card>
     </MainLayout>
   );
 };

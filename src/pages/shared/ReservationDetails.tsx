@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
+import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
 import { RESERVATIONS } from '../../services/reservationsData';
@@ -24,30 +25,30 @@ const ReservationDetails = () => {
 
   return (
     <MainLayout title="Reservation Details" subtitle={reservation.areaName}>
-      <section className="rounded-xl border border-slate-200 p-4">
-        <h2 className="text-2xl font-semibold mb-4 text-slate-900">Overview</h2>
-        <p className="text-base leading-relaxed">Date: {formatDate(reservation.reservedAt)}</p>
-        <p className="text-base leading-relaxed">Time Slot: {reservation.timeSlot}</p>
-        <p className="text-sm text-gray-600 mt-2">Status: Pending</p>
-      </section>
+      <Card className="border border-slate-200">
+        <h2 className="text-2xl font-medium mb-4">Overview</h2>
+        <p className="text-base">Date: {formatDate(reservation.reservedAt)}</p>
+        <p className="text-base">Time Slot: {reservation.timeSlot}</p>
+        <p className="text-sm text-gray-500 mt-2">Status: Pending</p>
+      </Card>
 
-      <section className="mt-6 rounded-xl border border-slate-200 p-4">
-        <h2 className="text-2xl font-semibold mb-4 text-slate-900">Notes</h2>
+      <Card className="border border-slate-200">
+        <h2 className="text-2xl font-medium mb-4">Notes</h2>
         <input
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-[#56CCF2]"
           placeholder="Add notes"
         />
-        <Button className="mt-4 text-sm">Submit</Button>
-      </section>
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        <Button variant="secondary" onClick={() => navigate('/reservations')} className="text-sm">
-          Back
-        </Button>
-        {user.role === 'admin' ? <Button className="text-sm">Approve</Button> : <Button className="text-sm">Cancel Reservation</Button>}
-      </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button>Submit</Button>
+          <Button variant="secondary" onClick={() => navigate('/reservations')}>
+            Back
+          </Button>
+          {user.role === 'admin' ? <Button>Approve</Button> : <Button>Cancel Reservation</Button>}
+        </div>
+      </Card>
     </MainLayout>
   );
 };

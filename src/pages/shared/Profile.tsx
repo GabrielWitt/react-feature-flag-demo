@@ -1,9 +1,9 @@
 import MainLayout from '../../components/layout/MainLayout';
+import Card from '../../components/ui/Card';
 import { useAuth } from '../../hooks/useAuth';
 
 const Profile = () => {
   const { user } = useAuth();
-
   if (!user) return null;
 
   const roleLabel = user.role === 'admin' ? 'ADMIN' : 'TENANT';
@@ -12,19 +12,19 @@ const Profile = () => {
 
   return (
     <MainLayout title="Profile" subtitle="Logged-in user information">
-      <div className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">User</h2>
-          <p className="text-base leading-relaxed">Name: {user.name}</p>
-          <p className="text-base leading-relaxed">Role: {roleLabel}</p>
-        </article>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">User</h2>
+          <p className="text-base">Name: {user.name}</p>
+          <p className="text-base">Role: {roleLabel}</p>
+        </Card>
 
-        <article className="rounded-xl border border-slate-200 p-4">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Account Information</h2>
-          <p className="text-base leading-relaxed">Email: {email}</p>
-          <p className="text-base leading-relaxed">User ID: {userCode}</p>
-          <p className="text-sm text-gray-600 mt-2">Password: ••••••</p>
-        </article>
+        <Card className="border border-slate-200">
+          <h2 className="text-2xl font-medium mb-4">Account Information</h2>
+          <p className="text-base">Email: {email}</p>
+          <p className="text-base">User ID: {userCode}</p>
+          <p className="text-sm text-gray-500 mt-2">Password: ••••••</p>
+        </Card>
       </div>
     </MainLayout>
   );
