@@ -1,108 +1,99 @@
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AppNavigator from '../shared/components/AppNavigator';
+import MainLayout from '../../components/layout/MainLayout';
+import Button from '../../components/ui/Button';
+import { useAuth } from '../../hooks/useAuth';
+import { fetchUsers } from '../../services/usersApi';
+import type { BackendUser, DashboardPaymentRecord } from '../../services/usersApi';
 
-type PaymentStatus = 'Paid' | 'Pending';
-
-type PaymentRow = {
-  id: string;
-  type: string;
-  description: string;
-  date: string;
-  amount: string;
-  status: PaymentStatus;
-};
-
-const PAYMENT_ROWS: PaymentRow[] = [
+const FALLBACK_HISTORY: DashboardPaymentRecord[] = [
   { id: 'PAY-2025-001', type: 'Monthly Lease', description: 'January', date: 'Jan 01, 2025', amount: '$1,200', status: 'Paid' },
-  { id: 'PAY-2025-002', type: 'Reservation', description: 'Pool Reservation', date: 'Jun 15, 2025', amount: '$120', status: 'Paid' },
-  { id: 'PAY-2025-009', type: 'Reservation', description: 'BBQ Area Reservation', date: 'Jun 15, 2025', amount: '$120', status: 'Paid' },
   { id: 'PAY-2025-010', type: 'Monthly Lease', description: 'October', date: 'Oct 01, 2025', amount: '$1,200', status: 'Pending' },
 ];
 
-const statusClass = (status: PaymentStatus) => {
-  if (status === 'Paid') {
-    return 'bg-blue-100 text-blue-700';
-  }
-
-  return 'bg-slate-200 text-slate-700';
-};
-
 const Payments = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [tenant, setTenant] = useState<BackendUser | null>(null);
+
+  useEffect(() => {
+    const loadTenant = async (): Promise<void> => {
+      if (!user) return;
+
+      try {
+        const users = await fetchUsers();
+        setTenant(users.find((item) => item.id === user.id && item.role === 'user') ?? null);
+      } catch {
+        setTenant(null);
+      }
+    };
+
+    void loadTenant();
+  }, [user]);
+
+  const apartment = tenant?.apartment ?? 'B402';
+  const paymentSummary = tenant?.tenantDashboard?.paymentSummary ?? {
+    totalPaidThisYear: '$14,400',
+    pendingAmount: '$1,200',
+    nextDueDate: 'Oct 01, 2025',
+  };
+  const paymentHistory = tenant?.tenantDashboard?.paymentHistory ?? FALLBACK_HISTORY;
+
+  const subtitle = useMemo(() => {
+    if (tenant?.tenantDashboard?.building) {
+      return `${tenant.tenantDashboard.building} - Lease and Reservation Payments`;
+    }
+    return 'Lease and Reservation Payments';
+  }, [tenant?.tenantDashboard?.building]);
 
   return (
-    <main className="min-h-screen bg-[#e9eef4] px-4 py-6 sm:px-6 lg:px-10">
-      <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.15)]">
-        <AppNavigator />
+    <MainLayout title={`Apartment ${apartment} - Payment History`} subtitle={subtitle}>
+      <Button onClick={() => navigate('/tenant/payments/checkout')} className="mb-6 text-sm">
+        Pay Now
+      </Button>
 
-        <section className="bg-[#f7f9fc] px-5 py-6 sm:px-8 sm:py-8">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Apartment B402 - Payment History</h1>
-              <p className="mt-1 text-base text-slate-500 sm:text-lg">Lease and Reservation Payments</p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate('/tenant/payments/checkout')}
-              className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
-            >
-              Pay Now
-            </button>
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-              <p className="text-xl font-semibold text-slate-800">Total Paid This Year</p>
-              <p className="mt-2 text-4xl font-bold text-blue-600">$14,400</p>
-            </article>
-
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-              <p className="text-xl font-semibold text-slate-800">Pending Amount</p>
-              <p className="mt-2 text-4xl font-bold text-blue-600">$1,200</p>
-            </article>
-
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-              <p className="text-xl font-semibold text-slate-800">Next Due Date</p>
-              <p className="mt-2 text-4xl font-bold text-blue-600">Oct 1, 2025</p>
-            </article>
-          </div>
-
-          <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] text-left text-sm">
-                <thead className="text-slate-700">
-                  <tr>
-                    <th className="px-3 py-2 text-base font-semibold">Payment ID</th>
-                    <th className="px-3 py-2 text-base font-semibold">Type</th>
-                    <th className="px-3 py-2 text-base font-semibold">Description</th>
-                    <th className="px-3 py-2 text-base font-semibold">Date</th>
-                    <th className="px-3 py-2 text-base font-semibold">Amount</th>
-                    <th className="px-3 py-2 text-base font-semibold">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-700">
-                  {PAYMENT_ROWS.map((payment) => (
-                    <tr key={payment.id} className="border-t border-slate-100">
-                      <td className="px-3 py-2 text-xl">{payment.id}</td>
-                      <td className="px-3 py-2 text-xl">{payment.type}</td>
-                      <td className="px-3 py-2 text-xl">{payment.description}</td>
-                      <td className="px-3 py-2 text-xl">{payment.date}</td>
-                      <td className="px-3 py-2 text-xl">{payment.amount}</td>
-                      <td className="px-3 py-2">
-                        <span className={`rounded-full px-3 py-1 text-sm font-semibold ${statusClass(payment.status)}`}>
-                          {payment.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <article className="rounded-xl border border-slate-200 p-4">
+          <h3 className="text-xl font-medium mb-3 text-slate-900">Total Paid This Year</h3>
+          <p className="text-base leading-relaxed">{paymentSummary.totalPaidThisYear}</p>
+        </article>
+        <article className="rounded-xl border border-slate-200 p-4">
+          <h3 className="text-xl font-medium mb-3 text-slate-900">Pending Amount</h3>
+          <p className="text-base leading-relaxed">{paymentSummary.pendingAmount}</p>
+        </article>
+        <article className="rounded-xl border border-slate-200 p-4">
+          <h3 className="text-xl font-medium mb-3 text-slate-900">Next Due Date</h3>
+          <p className="text-base leading-relaxed">{paymentSummary.nextDueDate}</p>
+        </article>
       </div>
-    </main>
+
+      <div className="mt-8 overflow-x-auto rounded-xl border border-slate-200">
+        <table className="w-full min-w-[760px] text-left text-sm">
+          <thead className="bg-slate-100 text-gray-600">
+            <tr>
+              <th className="px-3 py-2">Payment ID</th>
+              <th className="px-3 py-2">Type</th>
+              <th className="px-3 py-2">Description</th>
+              <th className="px-3 py-2">Date</th>
+              <th className="px-3 py-2">Amount</th>
+              <th className="px-3 py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paymentHistory.map((payment) => (
+              <tr key={payment.id} className="border-t border-slate-100">
+                <td className="px-3 py-2">{payment.id}</td>
+                <td className="px-3 py-2">{payment.type}</td>
+                <td className="px-3 py-2">{payment.description}</td>
+                <td className="px-3 py-2">{payment.date}</td>
+                <td className="px-3 py-2">{payment.amount}</td>
+                <td className="px-3 py-2">{payment.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </MainLayout>
   );
 };
 

@@ -1,187 +1,103 @@
 import { useState } from 'react';
-import AppNavigator from '../shared/components/AppNavigator';
+import MainLayout from '../../components/layout/MainLayout';
+import Button from '../../components/ui/Button';
 
 type PaymentMethod = 'card' | 'bank';
 
+type CardForm = {
+  cardNumber: string;
+  cardName: string;
+  expDate: string;
+  cvv: string;
+};
+
+type BankForm = {
+  accountHolder: string;
+  routingNumber: string;
+  accountNumber: string;
+  bankName: string;
+};
+
+const EMPTY_CARD_FORM: CardForm = { cardNumber: '', cardName: '', expDate: '', cvv: '' };
+const EMPTY_BANK_FORM: BankForm = { accountHolder: '', routingNumber: '', accountNumber: '', bankName: '' };
+
 const PaymentCheckout = () => {
   const [method, setMethod] = useState<PaymentMethod>('card');
+  const [cardForm, setCardForm] = useState<CardForm>(EMPTY_CARD_FORM);
+  const [bankForm, setBankForm] = useState<BankForm>(EMPTY_BANK_FORM);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    if (method === 'card') {
+      if (!cardForm.cardNumber.trim() || !cardForm.cardName.trim() || !cardForm.expDate.trim() || !cardForm.cvv.trim()) {
+        setErrorMessage('Please complete all card payment fields before submitting.');
+        return;
+      }
+      setSuccessMessage('Payment submitted successfully. Your card payment is being processed.');
+      setCardForm(EMPTY_CARD_FORM);
+      return;
+    }
+
+    if (!bankForm.accountHolder.trim() || !bankForm.routingNumber.trim() || !bankForm.accountNumber.trim() || !bankForm.bankName.trim()) {
+      setErrorMessage('Please complete all bank account fields before submitting.');
+      return;
+    }
+
+    setSuccessMessage('Payment submitted successfully. Your bank transfer is being processed.');
+    setBankForm(EMPTY_BANK_FORM);
+  };
 
   return (
-    <main className="min-h-screen bg-[#e9eef4] px-4 py-6 sm:px-6 lg:px-10">
-      <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.15)]">
-        <AppNavigator />
-
-        <section className="bg-[#f7f9fc] px-5 py-6 sm:px-8 sm:py-8">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Payments</h1>
-
-          <div className="mt-4 flex gap-2">
-            <button
-              type="button"
-              onClick={() => setMethod('card')}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                method === 'card' ? 'bg-blue-500 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-100'
-              }`}
-            >
-              Pay with Card
-            </button>
-            <button
-              type="button"
-              onClick={() => setMethod('bank')}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                method === 'bank' ? 'bg-blue-500 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-100'
-              }`}
-            >
-              Pay with Bank Account
-            </button>
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              {method === 'card' ? (
-                <>
-                  <h2 className="text-lg font-semibold text-slate-900">Card Payment Details</h2>
-
-                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
-                      <label htmlFor="cardNumber" className="text-sm font-medium text-slate-600">
-                        Card Number
-                      </label>
-                      <input
-                        id="cardNumber"
-                        type="text"
-                        placeholder="1234 5678 9012 3456"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div className="sm:col-span-2">
-                      <label htmlFor="cardName" className="text-sm font-medium text-slate-600">
-                        Name on Card
-                      </label>
-                      <input
-                        id="cardName"
-                        type="text"
-                        placeholder="John Doe"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="expDate" className="text-sm font-medium text-slate-600">
-                        Expiration Date
-                      </label>
-                      <input
-                        id="expDate"
-                        type="text"
-                        placeholder="MM/YY"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="cvv" className="text-sm font-medium text-slate-600">
-                        CVV
-                      </label>
-                      <input
-                        id="cvv"
-                        type="text"
-                        placeholder="123"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <h2 className="text-lg font-semibold text-slate-900">Bank Account Payment Details</h2>
-
-                  <div className="mt-4 grid grid-cols-1 gap-3">
-                    <div>
-                      <label htmlFor="accountHolder" className="text-sm font-medium text-slate-600">
-                        Account Holder Name
-                      </label>
-                      <input
-                        id="accountHolder"
-                        type="text"
-                        placeholder="John Doe"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="routingNumber" className="text-sm font-medium text-slate-600">
-                        Routing Number
-                      </label>
-                      <input
-                        id="routingNumber"
-                        type="text"
-                        placeholder="021000021"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="accountNumber" className="text-sm font-medium text-slate-600">
-                        Account Number
-                      </label>
-                      <input
-                        id="accountNumber"
-                        type="text"
-                        placeholder="000123456789"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="bankName" className="text-sm font-medium text-slate-600">
-                        Bank Name
-                      </label>
-                      <input
-                        id="bankName"
-                        type="text"
-                        placeholder="Bank of America"
-                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="mt-5 border-t border-slate-200 pt-4">
-                <p className="text-sm text-slate-500">Amount to pay</p>
-                <p className="mt-1 text-2xl font-bold text-slate-900">$1,200.00</p>
-
-                <button
-                  type="button"
-                  className="mt-4 rounded-full bg-blue-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
-                >
-                  Pay Now
-                </button>
-              </div>
-            </article>
-
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="text-lg font-semibold text-slate-900">Account Summary</h2>
-
-              <div className="mt-4 space-y-3 text-sm text-slate-700">
-                <div className="flex items-center justify-between">
-                  <span>Outstanding Balance</span>
-                  <span className="font-semibold">$1,200.00</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Due Date</span>
-                  <span className="font-semibold">Oct 20, 2025</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Last Payment</span>
-                  <span className="font-semibold">Sep 20, 2025</span>
-                </div>
-              </div>
-            </article>
-          </div>
-        </section>
+    <MainLayout title="Payments" subtitle="Choose a payment method and submit securely">
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Button variant={method === 'card' ? 'primary' : 'secondary'} onClick={() => setMethod('card')} className="text-sm">
+          Pay with Card
+        </Button>
+        <Button variant={method === 'bank' ? 'primary' : 'secondary'} onClick={() => setMethod('bank')} className="text-sm">
+          Pay with Bank Account
+        </Button>
       </div>
-    </main>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <article className="rounded-xl border border-slate-200 p-4">
+          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Payment Details</h2>
+
+          {method === 'card' ? (
+            <div className="grid gap-3">
+              <input value={cardForm.cardNumber} onChange={(event) => setCardForm((prev) => ({ ...prev, cardNumber: event.target.value }))} placeholder="Card number" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={cardForm.cardName} onChange={(event) => setCardForm((prev) => ({ ...prev, cardName: event.target.value }))} placeholder="Name on card" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={cardForm.expDate} onChange={(event) => setCardForm((prev) => ({ ...prev, expDate: event.target.value }))} placeholder="Expiration date (MM/YY)" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={cardForm.cvv} onChange={(event) => setCardForm((prev) => ({ ...prev, cvv: event.target.value }))} placeholder="CVV" className="rounded-lg border border-slate-300 px-3 py-2" />
+            </div>
+          ) : (
+            <div className="grid gap-3">
+              <input value={bankForm.accountHolder} onChange={(event) => setBankForm((prev) => ({ ...prev, accountHolder: event.target.value }))} placeholder="Account holder name" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={bankForm.routingNumber} onChange={(event) => setBankForm((prev) => ({ ...prev, routingNumber: event.target.value }))} placeholder="Routing number" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={bankForm.accountNumber} onChange={(event) => setBankForm((prev) => ({ ...prev, accountNumber: event.target.value }))} placeholder="Account number" className="rounded-lg border border-slate-300 px-3 py-2" />
+              <input value={bankForm.bankName} onChange={(event) => setBankForm((prev) => ({ ...prev, bankName: event.target.value }))} placeholder="Bank name" className="rounded-lg border border-slate-300 px-3 py-2" />
+            </div>
+          )}
+
+          {errorMessage ? <p className="mt-4 text-sm text-red-700">{errorMessage}</p> : null}
+          {successMessage ? <p className="mt-4 text-sm text-emerald-700">{successMessage}</p> : null}
+
+          <Button onClick={handleSubmit} className="mt-4 text-sm" aria-label="Submit payment">
+            Pay Now
+          </Button>
+        </article>
+
+        <article className="rounded-xl border border-slate-200 p-4">
+          <h2 className="text-2xl font-semibold mb-4 text-slate-900">Account Summary</h2>
+          <p className="text-base leading-relaxed">Outstanding Balance: $1,200.00</p>
+          <p className="text-base leading-relaxed">Due Date: Oct 20, 2025</p>
+          <p className="text-sm text-gray-600 mt-2">Last Payment: Sep 20, 2025</p>
+        </article>
+      </div>
+    </MainLayout>
   );
 };
 

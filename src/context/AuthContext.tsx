@@ -1,16 +1,19 @@
 import { createContext, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { User } from '../types/feature';
+import { loginWithApi } from '../services/authApi';
 
 export type LoginInput = {
-  name: string;
-  role: User['role'];
+  email: string;
+  password: string;
 };
 
 export type AuthContextValue = {
   user: User | null;
   isAuthenticated: boolean;
-  login: (input: LoginInput) => void;
+  authLoading: boolean;
+  authError: string | null;
+  login: (input: LoginInput) => Promise<User>;
   logout: () => void;
 };
 
@@ -21,32 +24,42 @@ type AuthProviderProps = {
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // `useState` stores the actual auth data that can change over time.
-  // Updating `user` is what represents login/logout state transitions.
   const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  const login = (input: LoginInput): void => {
-    setUser({
-      id: Date.now(),
-      name: input.name,
-      role: input.role,
-    });
+  const login = async (input: LoginInput): Promise<User> => {
+    setAuthLoading(true);
+    setAuthError(null);
+
+    try {
+      const result = await loginWithApi(input);
+      setUser(result.user);
+      return result.user;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to login.';
+      setAuthError(message);
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const logout = (): void => {
     setUser(null);
+    setAuthError(null);
   };
 
-  // `useMemo` does not store auth state; it memoizes the context object shape.
-  // This keeps a stable reference between renders when `user` is unchanged.
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isAuthenticated: user !== null,
+      authLoading,
+      authError,
       login,
       logout,
     }),
-    [user],
+    [user, authLoading, authError],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
