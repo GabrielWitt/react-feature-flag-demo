@@ -13,6 +13,8 @@ import ReservationDetails from './pages/shared/ReservationDetails';
 import ReserveArea from './pages/shared/ReserveArea';
 import ClientHome from './pages/tenant/ClientHome';
 import LeaseDetail from './pages/tenant/LeaseDetail';
+import Payments from './pages/tenant/Payments';
+import PaymentCheckout from './pages/tenant/PaymentCheckout';
 
 type RequireAuthProps = {
   children: ReactNode;
@@ -115,6 +117,28 @@ const App = () => {
           <RequireAuth>
             <RequireRole role="user">
               <LeaseDetail />
+            </RequireRole>
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/tenant/payments"
+        element={
+          <RequireAuth>
+            <RequireRole role="user">
+              <Payments />
+            </RequireRole>
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/tenant/payments/checkout"
+        element={
+          <RequireAuth>
+            <RequireRole role="user">
+              <PaymentCheckout />
             </RequireRole>
           </RequireAuth>
         }

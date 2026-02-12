@@ -20,7 +20,7 @@ const AppNavigator = () => {
   const links: NavItem[] = [
     { to: homePath, label: homeLabel, end: true },
     ...(user.role === 'admin' ? [{ to: '/admin/tenants', label: 'Tenants' }] : []),
-    ...(user.role === 'user' ? [{ to: '/tenant/lease', label: 'My Lease' }] : []),
+    ...(user.role === 'user' ? [{ to: '/tenant/lease', label: 'My Lease' }, { to: '/tenant/payments', label: 'Payments' }] : []),
     { to: user.role === 'user' ? '/tenant/reservations' : '/reservations', label: 'Reservations' },
     { to: '/profile', label: 'Profile' },
     { to: '/about', label: 'About' },
