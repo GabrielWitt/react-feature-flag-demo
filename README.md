@@ -44,7 +44,7 @@ This layered approach reduces accidental exposure of restricted UI and improves 
 10. [Roadmap](#roadmap)
 11. [Author](#author)
 
-## Demo
+## Mock Screens
 <p align="center">
   <img src="Mocks/Login.png" alt="Login" width="720" />
   <br />
