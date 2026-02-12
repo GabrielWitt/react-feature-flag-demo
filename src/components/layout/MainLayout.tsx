@@ -1,29 +1,24 @@
 import type { ReactNode } from 'react';
-import AppNavigator from '../../pages/shared/components/AppNavigator';
+import Container from '../ui/Container';
+import Navbar from '../ui/Navbar';
+import PageHeader from '../ui/PageHeader';
 
 type MainLayoutProps = {
   title: string;
   subtitle?: string;
   children: ReactNode;
-  showNavigator?: boolean;
+  actions?: ReactNode;
 };
 
-const MainLayout = ({ title, subtitle, children, showNavigator = true }: MainLayoutProps) => {
+const MainLayout = ({ title, subtitle, children, actions }: MainLayoutProps) => {
   return (
-    <main className="min-h-screen bg-slate-100">
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* A shared layout keeps typography and spacing predictable across every page. */}
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          {showNavigator ? <AppNavigator /> : null}
-          <section className="px-6 py-8">
-            <header className="mb-6">
-              <h1 className="text-3xl font-bold mb-6 text-slate-900">{title}</h1>
-              {subtitle ? <p className="text-sm text-gray-600 -mt-4">{subtitle}</p> : null}
-            </header>
-            <div className="text-base leading-relaxed text-slate-700">{children}</div>
-          </section>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#F4F6F9]">
+      <Navbar />
+      <Container className="pt-24 pb-10">
+        {/* Shared structure keeps every page aligned to one SaaS layout language. */}
+        <PageHeader title={title} subtitle={subtitle} actions={actions} />
+        <div className="space-y-6">{children}</div>
+      </Container>
     </main>
   );
 };

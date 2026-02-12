@@ -12,11 +12,11 @@ type ButtonProps = {
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'onClick' | 'disabled' | 'children' | 'className'>;
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500',
-  secondary: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-400',
+  primary: 'bg-[#2F80ED] text-white hover:bg-[#1c6fe0] focus-visible:ring-[#56CCF2] shadow-sm',
+  secondary: 'bg-white border border-[#2F80ED] text-[#2F80ED] hover:bg-[#F4F6F9] focus-visible:ring-[#56CCF2]',
 };
 
-// Reusable button variants avoid style drift and duplicated utility classes across screens.
+// Reusable button variants keep interactions and visual language consistent at scale.
 const Button = ({
   children,
   onClick,
