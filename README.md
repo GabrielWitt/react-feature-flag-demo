@@ -45,25 +45,41 @@ This layered approach reduces accidental exposure of restricted UI and improves 
 11. [Author](#author)
 
 ## Demo
-Add screenshots/GIFs here:
+<p align="center">
+  <img src="Mocks/Login.png" alt="Login" width="720" />
+  <br />
+  <sub><strong>Login.png</strong></sub>
+</p>
 
-- `Mocks/Login.png`
-- `Mocks/HomeAdmin.png`
-- `Mocks/HomeClient.png`
-- `Mocks/Reservation_ist.png`
-- `Mocks/Tenant_List.png`
-- `Mocks/payments_list.png`
+<p align="center">
+  <img src="Mocks/HomeAdmin.png" alt="Home Admin" width="720" />
+  <br />
+  <sub><strong>HomeAdmin.png</strong></sub>
+</p>
 
-Example Markdown:
+<p align="center">
+  <img src="Mocks/HomeClient.png" alt="Home Client" width="720" />
+  <br />
+  <sub><strong>HomeClient.png</strong></sub>
+</p>
 
-```md
-![Login Screen](Mocks/Login.png)
-![Admin Home](Mocks/HomeAdmin.png)
-![Client Home](Mocks/HomeClient.png)
-![Reservations List](Mocks/Reservation_ist.png)
-![Tenant List](Mocks/Tenant_List.png)
-![Payments List](Mocks/payments_list.png)
-```
+<p align="center">
+  <img src="Mocks/Reserve_List.png" alt="Reservation List" width="720" />
+  <br />
+  <sub><strong>Reserve_List.png</strong></sub>
+</p>
+
+<p align="center">
+  <img src="Mocks/Tenant_list.png" alt="Tenant List" width="720" />
+  <br />
+  <sub><strong>Tenant_list.png</strong></sub>
+</p>
+
+<p align="center">
+  <img src="Mocks/payments_list.png" alt="Payments List" width="720" />
+  <br />
+  <sub><strong>payments_list.png</strong></sub>
+</p>
 
 ## Features Implemented
 - Authentication flow with role-based routing:
