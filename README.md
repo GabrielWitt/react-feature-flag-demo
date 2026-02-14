@@ -41,7 +41,7 @@ This layered approach reduces accidental exposure of restricted UI and improves 
 7. [Folder Structure](#folder-structure)
 8. [Testing](#testing)
 9. [Contribution Guidelines](#contribution-guidelines)
-10. [Roadmap](#roadmap)
+10. [Execution Path](#execution-path)
 11. [Author](#author)
 
 ## Mock Screens
@@ -261,13 +261,66 @@ Engineering standards:
 - Keep business logic in hooks/services, not deeply inside JSX.
 - Preserve strict TypeScript safety.
 
-## Roadmap
-- Persist auth session/token securely.
-- Introduce backend validation/error contracts with consistent status codes.
-- Replace static PHP arrays with database-backed models.
-- Add E2E tests for role/flag flows.
-- Add CI pipeline (build + test + lint gates).
-- Add observability (error boundaries + logging strategy).
+## Execution Path
+This is the implementation route we will follow to move this project from "good demo" to "senior-level frontend reference."
+
+### Phase 0 - Baseline and quality gates
+- Add `lint`, `lint:fix`, and `typecheck` scripts.
+- Configure ESLint + Prettier.
+- Add CI checks for build, typecheck, lint, and tests.
+- Definition of Done:
+  - every PR fails if quality gates fail.
+  - local + CI commands are documented and reproducible.
+
+### Phase 1 - Auth and session hardening
+- Persist auth session (token + user) and restore it on app boot.
+- Add logout cleanup and invalid/expired session handling.
+- Centralize auth state transitions (idle/loading/success/error).
+- Definition of Done:
+  - page refresh keeps user logged in when session is valid.
+  - unauthorized/expired sessions redirect predictably.
+
+### Phase 2 - Data layer architecture
+- Replace scattered page-level fetches with a shared data layer (React Query/SWR).
+- Add request deduplication, caching, and consistent loading/error states.
+- Remove duplicate data sources (`TENANTS` mock vs API source of truth).
+- Definition of Done:
+  - no duplicated fetch logic across pages.
+  - each domain screen consumes typed shared queries/hooks.
+
+### Phase 3 - RBAC and tenant-scoped authorization
+- Remove hardcoded apartment checks (`B402`) and use authenticated user claims.
+- Enforce role + tenant scope at route level and view level.
+- Add explicit forbidden/not-found states.
+- Definition of Done:
+  - tenant users can only read/write their own records.
+  - authorization rules are centralized and test-covered.
+
+### Phase 4 - UX and accessibility uplift
+- Add semantic form labels, keyboard support, and focus management.
+- Replace clickable cards with accessible interactive patterns.
+- Standardize empty, loading, and error states across modules.
+- Definition of Done:
+  - main flows are keyboard navigable.
+  - core screens pass basic accessibility checks.
+
+### Phase 5 - Test strategy and confidence
+- Add unit tests for auth context, route guards, and API adapters.
+- Add integration tests for critical role-based flows.
+- Add E2E tests for login, navigation, reservations, and payments.
+- Definition of Done:
+  - critical user journeys are covered end-to-end.
+  - regressions in RBAC/feature flags are caught before merge.
+
+### Suggested delivery sequence
+1. Phase 0 and Phase 1
+2. Phase 2
+3. Phase 3
+4. Phase 4
+5. Phase 5
+
+### Why this order
+- It reduces risk first (auth + quality gates), then improves architecture, then strengthens authorization, and finally scales confidence with testing.
 
 ## Author
 Gabriel Witt  
