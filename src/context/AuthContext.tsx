@@ -66,7 +66,8 @@ const isUser = (value: unknown): value is User => {
   return (
     typeof candidate.id === 'number' &&
     typeof candidate.name === 'string' &&
-    (candidate.role === 'admin' || candidate.role === 'user')
+    (candidate.role === 'admin' || candidate.role === 'user') &&
+    (typeof candidate.apartment === 'string' || candidate.apartment === null)
   );
 };
 

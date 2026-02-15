@@ -17,6 +17,9 @@ const Profile = () => {
           <h2 className="text-2xl font-medium mb-4">User</h2>
           <p className="text-base">Name: {user.name}</p>
           <p className="text-base">Role: {roleLabel}</p>
+          {user.role === 'user' ? (
+            <p className="text-base">Apartment: {user.apartment ?? 'Not assigned'}</p>
+          ) : null}
         </Card>
 
         <Card className="border border-slate-200">

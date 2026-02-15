@@ -5,6 +5,7 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { useAuth } from '../../hooks/useAuth';
 import { RESERVATIONS } from '../../services/reservationsData';
+import { canCreateTenantReservation } from '../../utils/authorization';
 
 const Reservations = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Reservations = () => {
     const baseRows =
       user.role === 'admin'
         ? RESERVATIONS
-        : RESERVATIONS.filter((item) => item.apartment === 'B402');
+        : RESERVATIONS.filter((item) => item.apartment === user.apartment);
     const query = search.trim().toLowerCase();
     if (!query) return baseRows;
 
@@ -33,13 +34,22 @@ const Reservations = () => {
       title="Reservations"
       subtitle="Shared reservation list for admins and tenants"
       actions={
-        user?.role !== 'admin' ? (
+        canCreateTenantReservation(user) ? (
           <Button onClick={() => navigate('/reservations/new')} className="text-sm">
             Reserve Area
           </Button>
         ) : null
       }
     >
+      {user?.role === 'user' && !user.apartment ? (
+        <Card className="border border-amber-200 bg-amber-50">
+          <p className="text-sm text-amber-800">
+            Your account is missing apartment information. Contact an admin to enable reservation
+            access.
+          </p>
+        </Card>
+      ) : null}
+
       <Card className="border border-slate-200">
         <label htmlFor="reservations-search" className="text-sm text-gray-500">
           Search reservations

@@ -74,6 +74,7 @@ export const loginWithApi = async (payload: LoginRequest): Promise<LoginResult> 
       id: raw.data.user.id,
       name: raw.data.user.name,
       role: raw.data.user.role,
+      apartment: raw.data.user.apartment,
     },
   };
 };

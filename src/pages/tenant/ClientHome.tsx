@@ -53,14 +53,19 @@ const ClientHome = () => {
       ) : null}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card
-          className="border border-slate-200 cursor-pointer hover:shadow-md"
-          onClick={() => navigate('/tenant/lease')}
-        >
+        <Card className="border border-slate-200 hover:shadow-md">
           <h2 className="text-2xl font-medium mb-4">Apartment Summary</h2>
           <p className="text-base">Apartment: {apartment}</p>
           <p className="text-base">Monthly Rent: {monthlyRent}</p>
-          <p className="text-sm text-gray-500 mt-2">Open lease details</p>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => navigate('/tenant/lease')}
+              className="text-sm font-medium text-[#2F80ED] underline-offset-2 hover:underline"
+            >
+              Open lease details
+            </button>
+          </div>
         </Card>
 
         <Card className="border border-slate-200">
@@ -82,10 +87,7 @@ const ClientHome = () => {
           </ul>
         </Card>
 
-        <Card
-          className="border border-slate-200 cursor-pointer hover:shadow-md"
-          onClick={() => navigate('/tenant/reservations')}
-        >
+        <Card className="border border-slate-200 hover:shadow-md">
           <h2 className="text-2xl font-medium mb-4">Upcoming Reservations</h2>
           <ul className="space-y-2">
             {upcomingReservations.map((reservation) => (
@@ -94,6 +96,15 @@ const ClientHome = () => {
               </li>
             ))}
           </ul>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => navigate('/tenant/reservations')}
+              className="text-sm font-medium text-[#2F80ED] underline-offset-2 hover:underline"
+            >
+              View all reservations
+            </button>
+          </div>
         </Card>
       </div>
     </MainLayout>

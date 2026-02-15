@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import MainLayout from '../../components/layout/MainLayout';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -15,46 +16,73 @@ const ReserveArea = () => {
     '05:00 PM - 06:00 PM',
   ];
 
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage(`Reservation request sent for ${area} on ${date} (${timeSlot}).`);
+  };
+
   return (
     <MainLayout title="Reserve Common Area" subtitle="Create a new common-area reservation">
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <Card className="border border-slate-200">
           <h2 className="text-2xl font-medium mb-4">Selection</h2>
-          <label className="text-sm text-gray-500">Area</label>
-          <select
-            value={area}
-            onChange={(event) => setArea(event.target.value)}
-            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
-          >
-            <option>Pool</option>
-            <option>BBQ Area</option>
-            <option>Meeting Room</option>
-            <option>Gym</option>
-          </select>
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="reserve-area" className="text-sm text-gray-500">
+              Area
+            </label>
+            <select
+              id="reserve-area"
+              value={area}
+              onChange={(event) => setArea(event.target.value)}
+              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
+            >
+              <option>Pool</option>
+              <option>BBQ Area</option>
+              <option>Meeting Room</option>
+              <option>Gym</option>
+            </select>
 
-          <label className="mt-4 block text-sm text-gray-500">Date</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
-            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
-          />
+            <label htmlFor="reserve-date" className="mt-4 block text-sm text-gray-500">
+              Date
+            </label>
+            <input
+              id="reserve-date"
+              type="date"
+              value={date}
+              onChange={(event) => setDate(event.target.value)}
+              className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
+            />
 
-          <p className="mt-4 text-sm text-gray-500">Time slots</p>
-          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {slots.map((slot) => (
-              <Button
-                key={slot}
-                variant={timeSlot === slot ? 'primary' : 'secondary'}
-                onClick={() => setTimeSlot(slot)}
-                className="text-sm"
-              >
-                {slot}
-              </Button>
-            ))}
-          </div>
+            <fieldset className="mt-4">
+              <legend className="text-sm text-gray-500">Time slots</legend>
+              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {slots.map((slot) => (
+                  <Button
+                    key={slot}
+                    type="button"
+                    variant={timeSlot === slot ? 'primary' : 'secondary'}
+                    onClick={() => setTimeSlot(slot)}
+                    className="text-sm"
+                    aria-pressed={timeSlot === slot}
+                  >
+                    {slot}
+                  </Button>
+                ))}
+              </div>
+            </fieldset>
 
-          <Button className="mt-4">Reserve</Button>
+            {message ? (
+              <p role="status" aria-live="polite" className="mt-4 text-sm text-emerald-700">
+                {message}
+              </p>
+            ) : null}
+
+            <Button type="submit" className="mt-4">
+              Reserve
+            </Button>
+          </form>
         </Card>
 
         <Card className="border border-slate-200">

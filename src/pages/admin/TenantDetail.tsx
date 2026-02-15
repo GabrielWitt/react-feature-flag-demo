@@ -1,8 +1,9 @@
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import LoadingSkeleton from '../../components/ui/LoadingSkeleton';
+import StateCard from '../../components/ui/StateCard';
 import { useUsersQuery } from '../../hooks/useUsersQuery';
 
 const getLatestPaymentDate = (
@@ -53,7 +54,18 @@ const TenantDetail = () => {
     );
   }
 
-  if (!tenant) return <Navigate to="/admin/tenants" replace />;
+  if (!tenant) {
+    return (
+      <MainLayout title="Tenant not found" subtitle="The requested tenant record does not exist">
+        <StateCard
+          title="Tenant not found."
+          message="Verify the tenant ID or return to the list."
+          actionLabel="Back to tenants"
+          onAction={() => navigate('/admin/tenants')}
+        />
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout

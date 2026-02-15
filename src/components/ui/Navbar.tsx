@@ -37,6 +37,12 @@ const Navbar = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-slate-200 bg-white shadow-sm">
+      <a
+        href="#main-content"
+        className="absolute left-4 top-2 -translate-y-16 rounded-md bg-[#2F80ED] px-3 py-2 text-sm font-medium text-white transition focus:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      >
+        Skip to main content
+      </a>
       <Container className="flex h-full items-center justify-between">
         <img src="/GabroDevLogo.png" alt="Gabrodev" className="h-10 w-12 object-contain" />
 

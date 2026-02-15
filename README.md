@@ -312,6 +312,8 @@ This is the implementation route we will follow to move this project from "good 
 - `Phase 0` completed successfully.
 - `Phase 1` completed successfully.
 - `Phase 2` completed successfully.
+- `Phase 3` completed successfully.
+- `Phase 4` in progress.
 - Implemented so far:
   - quality scripts: `typecheck`, `lint`, `lint:fix`, `format`, `format:check`.
   - ESLint + Prettier + EditorConfig baseline.
@@ -323,6 +325,12 @@ This is the implementation route we will follow to move this project from "good 
   - tenant/admin pages migrated away from duplicated `TENANTS` source to API-backed users data.
   - duplicated page-level users fetch logic consolidated into shared hooks.
   - React Query provider added at app root for cross-page cache reuse.
+  - tenant scoping migrated from hardcoded apartment values to authenticated user claims.
+  - explicit forbidden and not-found screens added for unauthorized/missing resources.
+  - authorization rules centralized in reusable utilities.
+  - RBAC and tenant-scope tests added for authorization behavior.
+  - semantic form labels and accessible feedback states added in core forms.
+  - interactive cards replaced with keyboard-friendly actions in tenant home flows.
 - Validation executed successfully:
   - `npm run format:check`
   - `npm run lint`

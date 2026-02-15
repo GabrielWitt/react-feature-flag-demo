@@ -9,7 +9,9 @@ import Home from './pages/admin/Home';
 import Tenants from './pages/admin/Tenants';
 import TenantDetail from './pages/admin/TenantDetail';
 import About from './pages/shared/About';
+import Forbidden from './pages/shared/Forbidden';
 import Login from './pages/shared/Login';
+import NotFound from './pages/shared/NotFound';
 import Profile from './pages/shared/Profile';
 import Reservations from './pages/shared/Reservations';
 import ReservationDetails from './pages/shared/ReservationDetails';
@@ -18,6 +20,7 @@ import ClientHome from './pages/tenant/ClientHome';
 import LeaseDetail from './pages/tenant/LeaseDetail';
 import Payments from './pages/tenant/Payments';
 import PaymentCheckout from './pages/tenant/PaymentCheckout';
+import { hasRequiredRole } from './utils/authorization';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,8 +67,8 @@ const RequireRole = ({ role, children }: RequireRoleProps) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role !== role) {
-    return <Navigate to={user.role === 'admin' ? '/admin' : '/tenant'} replace />;
+  if (!hasRequiredRole(user, role)) {
+    return <Navigate to="/forbidden" replace />;
   }
 
   return <>{children}</>;
@@ -185,6 +188,15 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/forbidden"
+        element={
+          <RequireAuth>
+            <Forbidden />
+          </RequireAuth>
+        }
+      />
+
+      <Route
         path="/profile"
         element={
           <RequireAuth>
@@ -215,12 +227,21 @@ const AppRoutes = () => {
         path="/reservations/new"
         element={
           <RequireAuth>
-            <ReserveArea />
+            <RequireRole role="user">
+              <ReserveArea />
+            </RequireRole>
           </RequireAuth>
         }
       />
 
-      <Route path="*" element={<RoleRedirect />} />
+      <Route
+        path="*"
+        element={
+          <RequireAuth>
+            <NotFound />
+          </RequireAuth>
+        }
+      />
     </Routes>
   );
 };

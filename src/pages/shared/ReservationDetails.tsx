@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
+import StateCard from '../../components/ui/StateCard';
 import { useAuth } from '../../hooks/useAuth';
 import { RESERVATIONS } from '../../services/reservationsData';
+import { canAccessReservation } from '../../utils/authorization';
 
 const formatDate = (date: string) => {
   const parsed = new Date(`${date}T00:00:00`);
@@ -21,12 +23,40 @@ const ReservationDetails = () => {
   const { user } = useAuth();
   const [notes, setNotes] = useState('');
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) {
+    return null;
+  }
 
-  const reservation = RESERVATIONS.find((item) => item.id === Number(reservationId));
-  if (!reservation) return <Navigate to="/reservations" replace />;
-  if (user.role === 'user' && reservation.apartment !== 'B402')
-    return <Navigate to="/reservations" replace />;
+  const parsedId = Number(reservationId);
+  const reservation = RESERVATIONS.find((item) => item.id === parsedId);
+  const isForbidden = reservation ? !canAccessReservation(user, reservation.apartment) : false;
+
+  if (!reservation || Number.isNaN(parsedId)) {
+    return (
+      <MainLayout title="Reservation not found" subtitle="The reservation does not exist">
+        <StateCard
+          title="Reservation not found."
+          message="It may have been removed or the URL is invalid."
+          actionLabel="Back to reservations"
+          onAction={() => navigate('/reservations')}
+        />
+      </MainLayout>
+    );
+  }
+
+  if (isForbidden) {
+    return (
+      <MainLayout title="Access denied" subtitle="You are not allowed to open this reservation">
+        <StateCard
+          title="Access denied."
+          message="This reservation belongs to another apartment."
+          actionLabel="Back to reservations"
+          onAction={() => navigate('/reservations')}
+          tone="warning"
+        />
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout title="Reservation Details" subtitle={reservation.areaName}>
