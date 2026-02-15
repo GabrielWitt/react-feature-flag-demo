@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { FeatureFlagProvider } from './context/FeatureFlagContext';
 import { useAuth } from './hooks/useAuth';
 import type { User } from './types/feature';
 import Home from './pages/admin/Home';
@@ -15,6 +18,15 @@ import ClientHome from './pages/tenant/ClientHome';
 import LeaseDetail from './pages/tenant/LeaseDetail';
 import Payments from './pages/tenant/Payments';
 import PaymentCheckout from './pages/tenant/PaymentCheckout';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 type RequireAuthProps = {
   children: ReactNode;
@@ -59,8 +71,16 @@ const RequireRole = ({ role, children }: RequireRoleProps) => {
   return <>{children}</>;
 };
 
-const App = () => {
-  const { isAuthenticated } = useAuth();
+const AppRoutes = () => {
+  const { isAuthenticated, authStatus } = useAuth();
+
+  if (authStatus === 'restoring') {
+    return (
+      <main className="grid min-h-screen place-items-center bg-[#F4F6F9] px-6">
+        <p className="text-sm font-medium text-slate-600">Restoring your session...</p>
+      </main>
+    );
+  }
 
   return (
     <Routes>
@@ -202,6 +222,18 @@ const App = () => {
 
       <Route path="*" element={<RoleRedirect />} />
     </Routes>
+  );
+};
+
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <FeatureFlagProvider>
+          <AppRoutes />
+        </FeatureFlagProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
 

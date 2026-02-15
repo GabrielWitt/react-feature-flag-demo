@@ -14,10 +14,22 @@ const Navbar = () => {
 
   const items: NavItem[] = user
     ? [
-        { to: user.role === 'admin' ? '/admin' : '/tenant', label: user.role === 'admin' ? 'Dashboard' : 'Home', end: true },
+        {
+          to: user.role === 'admin' ? '/admin' : '/tenant',
+          label: user.role === 'admin' ? 'Dashboard' : 'Home',
+          end: true,
+        },
         ...(user.role === 'admin' ? [{ to: '/admin/tenants', label: 'Tenants' }] : []),
-        ...(user.role === 'user' ? [{ to: '/tenant/lease', label: 'My Lease' }, { to: '/tenant/payments', label: 'Payments' }] : []),
-        { to: user.role === 'user' ? '/tenant/reservations' : '/reservations', label: 'Reservations' },
+        ...(user.role === 'user'
+          ? [
+              { to: '/tenant/lease', label: 'My Lease' },
+              { to: '/tenant/payments', label: 'Payments' },
+            ]
+          : []),
+        {
+          to: user.role === 'user' ? '/tenant/reservations' : '/reservations',
+          label: 'Reservations',
+        },
         { to: '/profile', label: 'Profile' },
         { to: '/about', label: 'About' },
       ]

@@ -25,7 +25,11 @@ const Login = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     try {
-      const loggedUser = await login({ email: email.trim(), password: password.trim() });
+      const loggedUser = await login({
+        email: email.trim(),
+        password: password.trim(),
+        rememberSession: rememberMe,
+      });
       navigate(loggedUser.role === 'admin' ? '/admin' : '/tenant', { replace: true });
     } catch {
       // Error is surfaced by auth context.
@@ -45,10 +49,18 @@ const Login = () => {
 
         <div className="px-6 py-10 sm:px-12 sm:py-14">
           <div className="mx-auto max-w-sm">
-            <h1 className="text-center text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">Welcome Back</h1>
-            <p className="mt-3 text-center text-lg text-slate-500">Enter home again, where every detail is made for you.</p>
+            <h1 className="text-center text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+              Welcome Back
+            </h1>
+            <p className="mt-3 text-center text-lg text-slate-500">
+              Enter home again, where every detail is made for you.
+            </p>
 
-            {authError ? <p className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{authError}</p> : null}
+            {authError ? (
+              <p className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+                {authError}
+              </p>
+            ) : null}
 
             <form className="mt-8 space-y-4" onSubmit={(event) => void handleSubmit(event)}>
               <input
@@ -70,7 +82,10 @@ const Login = () => {
               />
 
               <div className="flex items-center justify-between gap-3">
-                <label htmlFor="remember-me" className="flex items-center gap-2 text-sm text-slate-500">
+                <label
+                  htmlFor="remember-me"
+                  className="flex items-center gap-2 text-sm text-slate-500"
+                >
                   <input
                     id="remember-me"
                     type="checkbox"
@@ -80,20 +95,30 @@ const Login = () => {
                   />
                   Remember me
                 </label>
-                <button type="button" className="text-sm font-medium text-[#2F80ED] hover:text-[#1c6fe0]">
+                <button
+                  type="button"
+                  className="text-sm font-medium text-[#2F80ED] hover:text-[#1c6fe0]"
+                >
                   Forgot password?
                 </button>
               </div>
 
               <div className="pt-1">
-                <Button type="submit" disabled={authLoading} className="mx-auto block min-w-40" aria-label="Login">
+                <Button
+                  type="submit"
+                  disabled={authLoading}
+                  className="mx-auto block min-w-40"
+                  aria-label="Login"
+                >
                   {authLoading ? 'Logging in...' : 'Login'}
                 </Button>
               </div>
             </form>
 
             <div className="mt-8 border-t border-slate-200 pt-5">
-              <p className="mb-3 text-center text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Demo Accounts</p>
+              <p className="mb-3 text-center text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                Demo Accounts
+              </p>
               <div className="flex flex-wrap justify-center gap-2">
                 {DEMO_CREDENTIALS.map((credential) => (
                   <button

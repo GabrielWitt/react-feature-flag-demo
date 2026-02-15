@@ -9,11 +9,15 @@ type ButtonProps = {
   variant?: ButtonVariant;
   disabled?: boolean;
   className?: string;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'onClick' | 'disabled' | 'children' | 'className'>;
+} & Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'type' | 'onClick' | 'disabled' | 'children' | 'className'
+>;
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-[#2F80ED] text-white hover:bg-[#1c6fe0] focus-visible:ring-[#56CCF2] shadow-sm',
-  secondary: 'bg-white border border-[#2F80ED] text-[#2F80ED] hover:bg-[#F4F6F9] focus-visible:ring-[#56CCF2]',
+  secondary:
+    'bg-white border border-[#2F80ED] text-[#2F80ED] hover:bg-[#F4F6F9] focus-visible:ring-[#56CCF2]',
 };
 
 // Reusable button variants keep interactions and visual language consistent at scale.

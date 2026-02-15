@@ -8,7 +8,11 @@ import { RESERVATIONS } from '../../services/reservationsData';
 
 const formatDate = (date: string) => {
   const parsed = new Date(`${date}T00:00:00`);
-  return new Intl.DateTimeFormat('en-US', { month: 'long', day: '2-digit', year: 'numeric' }).format(parsed);
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+  }).format(parsed);
 };
 
 const ReservationDetails = () => {
@@ -21,7 +25,8 @@ const ReservationDetails = () => {
 
   const reservation = RESERVATIONS.find((item) => item.id === Number(reservationId));
   if (!reservation) return <Navigate to="/reservations" replace />;
-  if (user.role === 'user' && reservation.apartment !== 'B402') return <Navigate to="/reservations" replace />;
+  if (user.role === 'user' && reservation.apartment !== 'B402')
+    return <Navigate to="/reservations" replace />;
 
   return (
     <MainLayout title="Reservation Details" subtitle={reservation.areaName}>

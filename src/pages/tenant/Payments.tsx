@@ -1,43 +1,34 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import LoadingSkeleton from '../../components/ui/LoadingSkeleton';
-import { useAuth } from '../../hooks/useAuth';
-import { fetchUsers } from '../../services/usersApi';
-import type { BackendUser, DashboardPaymentRecord } from '../../services/usersApi';
+import type { DashboardPaymentRecord } from '../../services/usersApi';
+import { useCurrentTenant } from '../../hooks/useCurrentTenant';
 
 const FALLBACK_HISTORY: DashboardPaymentRecord[] = [
-  { id: 'PAY-2025-001', type: 'Monthly Lease', description: 'January', date: 'Jan 01, 2025', amount: '$1,200', status: 'Paid' },
-  { id: 'PAY-2025-010', type: 'Monthly Lease', description: 'October', date: 'Oct 01, 2025', amount: '$1,200', status: 'Pending' },
+  {
+    id: 'PAY-2025-001',
+    type: 'Monthly Lease',
+    description: 'January',
+    date: 'Jan 01, 2025',
+    amount: '$1,200',
+    status: 'Paid',
+  },
+  {
+    id: 'PAY-2025-010',
+    type: 'Monthly Lease',
+    description: 'October',
+    date: 'Oct 01, 2025',
+    amount: '$1,200',
+    status: 'Pending',
+  },
 ];
 
 const Payments = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [tenant, setTenant] = useState<BackendUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadTenant = async (): Promise<void> => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const users = await fetchUsers();
-        setTenant(users.find((item) => item.id === user.id && item.role === 'user') ?? null);
-      } catch {
-        setTenant(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadTenant();
-  }, [user]);
+  const { tenant, loading, error } = useCurrentTenant();
 
   const apartment = tenant?.apartment ?? 'B402';
   const paymentSummary = tenant?.tenantDashboard?.paymentSummary ?? {
@@ -65,6 +56,11 @@ const Payments = () => {
       }
     >
       {loading ? <LoadingSkeleton /> : null}
+      {error ? (
+        <Card className="border border-rose-200 bg-rose-50">
+          <p className="text-sm text-rose-700">{error}</p>
+        </Card>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card className="border border-slate-200">

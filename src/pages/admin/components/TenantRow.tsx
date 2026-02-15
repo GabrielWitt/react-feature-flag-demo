@@ -20,7 +20,11 @@ const TenantRow = ({ tenant, isLast = false }: TenantRowProps) => {
       <td className="px-3 py-3 text-base">{tenant.unit}</td>
       <td className="px-3 py-3 text-base">{tenant.dueDate}</td>
       <td className="px-3 py-3">
-        <span className={`rounded-lg px-2 py-1 text-sm ${tenant.status === 'Active' ? 'bg-[#2F80ED] text-white' : 'bg-slate-100 text-gray-600'}`}>{tenant.status}</span>
+        <span
+          className={`rounded-lg px-2 py-1 text-sm ${tenant.status === 'Active' ? 'bg-[#2F80ED] text-white' : 'bg-slate-100 text-gray-600'}`}
+        >
+          {tenant.status}
+        </span>
       </td>
     </tr>
   );

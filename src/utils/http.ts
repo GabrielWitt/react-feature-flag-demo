@@ -14,6 +14,8 @@ export const parseJsonResponse = async <T>(
   try {
     return JSON.parse(raw) as T;
   } catch {
-    throw new Error(messages?.invalid ?? 'The server response could not be processed. Please try again.');
+    throw new Error(
+      messages?.invalid ?? 'The server response could not be processed. Please try again.',
+    );
   }
 };

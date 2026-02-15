@@ -63,7 +63,9 @@ export const loginWithApi = async (payload: LoginRequest): Promise<LoginResult> 
   }
 
   if (!response.ok || !raw.success || !raw.data) {
-    throw new Error(raw.error?.message ?? 'Login failed. Please verify your credentials and try again.');
+    throw new Error(
+      raw.error?.message ?? 'Login failed. Please verify your credentials and try again.',
+    );
   }
 
   return {

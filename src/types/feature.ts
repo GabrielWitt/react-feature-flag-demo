@@ -6,5 +6,5 @@ export type FeatureFlag = {
 export type User = {
   id: number;
   name: string;
-  role: "admin" | "user";
+  role: 'admin' | 'user';
 };

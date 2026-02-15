@@ -14,6 +14,7 @@ const setFlags = (flags: FeatureFlag[]) => {
   mockedUseFeatureFlagContext.mockReturnValue({
     flags,
     loading: false,
+    error: null,
   });
 };
 
@@ -48,4 +49,3 @@ describe('useFeature', () => {
     expect(result.current).toBe(false);
   });
 });
-

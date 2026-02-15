@@ -21,7 +21,12 @@ const AppNavigator = () => {
   const links: NavItem[] = [
     { to: homePath, label: homeLabel, end: true },
     ...(user.role === 'admin' ? [{ to: '/admin/tenants', label: 'Tenants' }] : []),
-    ...(user.role === 'user' ? [{ to: '/tenant/lease', label: 'My Lease' }, { to: '/tenant/payments', label: 'Payments' }] : []),
+    ...(user.role === 'user'
+      ? [
+          { to: '/tenant/lease', label: 'My Lease' },
+          { to: '/tenant/payments', label: 'Payments' },
+        ]
+      : []),
     { to: user.role === 'user' ? '/tenant/reservations' : '/reservations', label: 'Reservations' },
     { to: '/profile', label: 'Profile' },
     { to: '/about', label: 'About' },
@@ -45,7 +50,9 @@ const AppNavigator = () => {
             end={link.end}
             className={({ isActive }) =>
               `rounded-lg px-3 py-2 text-sm font-medium transition ${
-                isActive ? 'bg-slate-900 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-100'
+                isActive
+                  ? 'bg-slate-900 text-white'
+                  : 'border border-slate-300 text-slate-700 hover:bg-slate-100'
               }`
             }
           >

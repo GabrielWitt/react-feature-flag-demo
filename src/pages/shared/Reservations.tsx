@@ -13,7 +13,10 @@ const Reservations = () => {
 
   const rows = useMemo(() => {
     if (!user) return [];
-    const baseRows = user.role === 'admin' ? RESERVATIONS : RESERVATIONS.filter((item) => item.apartment === 'B402');
+    const baseRows =
+      user.role === 'admin'
+        ? RESERVATIONS
+        : RESERVATIONS.filter((item) => item.apartment === 'B402');
     const query = search.trim().toLowerCase();
     if (!query) return baseRows;
 
@@ -71,7 +74,10 @@ const Reservations = () => {
                   <td className="px-4 py-3 text-base">{reservation.status}</td>
                   <td className="px-4 py-3">
                     {reservation.action === 'View' ? (
-                      <Button onClick={() => navigate(`/reservations/${reservation.id}`)} className="text-sm">
+                      <Button
+                        onClick={() => navigate(`/reservations/${reservation.id}`)}
+                        className="text-sm"
+                      >
                         View
                       </Button>
                     ) : (
